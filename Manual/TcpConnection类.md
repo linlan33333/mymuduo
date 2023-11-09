@@ -102,7 +102,7 @@ TcpConnection类的作用是将connfd打包成Channel，设置好该connfd的各
   >
   > 第一种情况下会触发EPOLLHUP事件但不会触发EPOLLIN事件，因为没有数据需要读，此时走handleClose流程即可。
   >
-  > 第二种情况下会在触发EPOLLHUP事件的同时触发EPOLLIN事件，需要读取数据，此时Channel会调用handleRead来处理数据而不是handleClose关闭连接，因此后续数据处理完后由于对方已经关闭写端，不会发送数据，等待后两次挥手结束连接，<font color=red>就需要用到keepalive保活机制检测出该连接需要关闭然后走？？？等看完TCP那一块知识再说</font>
+  > 第二种情况下会在触发EPOLLHUP事件的同时触发EPOLLIN事件，需要读取数据，此时Channel会调用handleRead来处理数据而不是handleClose关闭连接，因此后续数据处理完后如果要发送给对方，那么由于对方已经关闭写端，导致发送失败进而关闭套接字，断开连接。
 
 * handleRead函数
 
